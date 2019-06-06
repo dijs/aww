@@ -8,7 +8,6 @@
     "react-scripts": "3.0.1"
   },
   "scripts": {
-    "deploy": "gh-pages build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "echo \"Test!\"",
