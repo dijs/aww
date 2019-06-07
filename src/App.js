@@ -68,6 +68,9 @@ function PostItem({ title, thumbnail, onSelect }) {
 function App() {
   const { posts } = usePosts();
   const [selected, setSelected] = React.useState(null);
+  if (!posts.length) {
+    return <div className="loading">Loading...</div>;
+  }
   if (selected === null) {
     return (
       <div className="container">

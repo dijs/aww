@@ -65,3 +65,14 @@ main button {
   font-size: 48px;
   color: white;
 }
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading {
+  font-size: 48px;
+  font-family: monospace;
+}
