@@ -7,11 +7,16 @@ function usePosts() {
       .then(res => res.json())
       .then(data => {
         setPosts(
-          data.data.children.map(child => ({
-            title: child.data.title,
-            thumbnail: child.data.thumbnail,
-            embed: child.data.embed
-          }))
+          data.data.children.map(child => {
+            const images =
+              child.data.preview && child.data.preview.images[0].resolutions;
+            return {
+              title: child.data.title,
+              thumbnail: child.data.thumbnail,
+              video: child.data.media && child.data.media.reddit_video,
+              preview: images && images[images.length - 1]
+            };
+          })
         );
       })
       .catch(err => {
@@ -21,10 +26,40 @@ function usePosts() {
   return { posts };
 }
 
-function Post({ title, thumbnail }) {
+function Title({ title }) {
+  if (title.length < 36) return <h2>{title}</h2>;
+  return <h2>{title.substring(0, 45)}...</h2>;
+}
+
+function htmlDecode(input) {
+  var e = document.createElement('textarea');
+  e.innerHTML = input;
+  // handle case of empty input
+  return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue;
+}
+
+function BigPost({ title, video, preview, onClose }) {
+  if (video) {
+    return (
+      <video autoplay loop poster={htmlDecode(preview.url)}>
+        <source src={video.fallback_url} />
+      </video>
+    );
+  }
   return (
-    <article key={title}>
-      <h2>{title}</h2>
+    <main
+      style={{ backgroundImage: preview && `url(${htmlDecode(preview.url)})` }}
+    >
+      <h1>{title}</h1>
+      <button onClick={onClose}>×</button>
+    </main>
+  );
+}
+
+function PostItem({ title, thumbnail, onSelect }) {
+  return (
+    <article key={title} onClick={onSelect}>
+      <Title title={title} />
       <img src={thumbnail} alt={title} />
     </article>
   );
@@ -32,7 +67,18 @@ function Post({ title, thumbnail }) {
 
 function App() {
   const { posts } = usePosts();
-  return <div className="container">{posts.map(Post)}</div>;
+  const [selected, setSelected] = React.useState(null);
+  if (selected === null) {
+    return (
+      <div className="container">
+        {posts.map((item, index) => (
+          <PostItem {...item} onSelect={() => setSelected(index)} />
+        ))}
+      </div>
+    );
+  } else {
+    return <BigPost {...posts[selected]} onClose={() => setSelected(null)} />;
+  }
 }
 
 export default App;

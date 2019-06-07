@@ -10,8 +10,14 @@ body {
 }
 
 article {
-  width: 33%;
+  width: 33.33%;
   position: relative;
+}
+
+@media (min-width: 320px) and (max-width: 480px) {
+  article {
+    width: 50%;
+  }
 }
 
 article img {
@@ -29,4 +35,33 @@ h2 {
   bottom: 0px;
   left: 10px;
   background: rgba(0, 0, 0, 0.5);
+}
+
+main {
+  position: fixed;
+  height: 100%;
+  background-size: cover;
+  width: 100%;
+  background-position: center;
+}
+
+main h1 {
+  position: absolute;
+  color: white;
+  font-family: monospace;
+  font-size: 24px;
+  bottom: 0px;
+  left: 10px;
+}
+
+main button {
+  position: fixed;
+  right: 10px;
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 48px;
+  color: white;
 }
