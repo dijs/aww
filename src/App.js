@@ -37,13 +37,25 @@ function htmlDecode(input) {
   return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue;
 }
 
-function BigPost({ title, preview, onClose }) {
+function BigPost({ title, thumbnail, preview, onClose }) {
+  // Preload image
+  const [preloaded, setPreloaded] = React.useState(false);
+  if (!preloaded) {
+    const img = new Image();
+    console.log(title, 'is preloading');
+    img.onload = () => {
+      console.log(title, 'was preloaded');
+      setPreloaded(true);
+    };
+    img.src = htmlDecode(preview.url);
+  }
+  const src = preloaded ? htmlDecode(preview.url) : thumbnail;
   return (
-    <main
-      style={{ backgroundImage: preview && `url(${htmlDecode(preview.url)})` }}
-    >
+    <main style={{ backgroundImage: `url(${src})` }}>
       <h1>{title}</h1>
-      <button onClick={onClose}>×</button>
+      <div className="close" onClick={onClose}>
+        <div className="inner">×</div>
+      </div>
     </main>
   );
 }
