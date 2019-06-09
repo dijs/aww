@@ -13,7 +13,6 @@ function usePosts() {
             return {
               title: child.data.title,
               thumbnail: child.data.thumbnail,
-              video: child.data.media && child.data.media.reddit_video,
               preview: images && images[images.length - 1]
             };
           })
@@ -38,14 +37,7 @@ function htmlDecode(input) {
   return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue;
 }
 
-function BigPost({ title, video, preview, onClose }) {
-  if (video) {
-    return (
-      <video autoplay loop poster={htmlDecode(preview.url)}>
-        <source src={video.fallback_url} />
-      </video>
-    );
-  }
+function BigPost({ title, preview, onClose }) {
   return (
     <main
       style={{ backgroundImage: preview && `url(${htmlDecode(preview.url)})` }}
@@ -58,9 +50,12 @@ function BigPost({ title, video, preview, onClose }) {
 
 function PostItem({ title, thumbnail, onSelect }) {
   return (
-    <article key={title} onClick={onSelect}>
+    <article
+      key={title}
+      onClick={onSelect}
+      style={{ backgroundImage: `url(${thumbnail})` }}
+    >
       <Title title={title} />
-      <img src={thumbnail} alt={title} />
     </article>
   );
 }

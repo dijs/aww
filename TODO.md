@@ -1,0 +1,1 @@
+- Use thumbnail until large preview image is ready to be used
