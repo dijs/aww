@@ -37,9 +37,12 @@ function htmlDecode(input) {
   return e.childNodes.length === 0 ? '' : e.childNodes[0].nodeValue;
 }
 
-function BigPost({ title, thumbnail, preview, onClose }) {
+function BigPost({ active, title, thumbnail, preview, onClose }) {
   // Preload image
   const [preloaded, setPreloaded] = React.useState(false);
+  if (!active) {
+    return <main />;
+  }
   if (!preloaded) {
     const img = new Image();
     console.log(title, 'is preloading');
@@ -51,7 +54,7 @@ function BigPost({ title, thumbnail, preview, onClose }) {
   }
   const src = preloaded ? htmlDecode(preview.url) : thumbnail;
   return (
-    <main style={{ backgroundImage: `url(${src})` }}>
+    <main className="active" style={{ backgroundImage: `url(${src})` }}>
       <h1>{title}</h1>
       <div className="close" onClick={onClose}>
         <div className="inner">×</div>
@@ -78,17 +81,20 @@ function App() {
   if (!posts.length) {
     return <div className="loading">Loading...</div>;
   }
-  if (selected === null) {
-    return (
+  return (
+    <React.Fragment>
       <div className="container">
         {posts.map((item, index) => (
           <PostItem {...item} onSelect={() => setSelected(index)} />
         ))}
       </div>
-    );
-  } else {
-    return <BigPost {...posts[selected]} onClose={() => setSelected(null)} />;
-  }
+      <BigPost
+        active={selected !== null}
+        {...posts[selected]}
+        onClose={() => setSelected(null)}
+      />
+    </React.Fragment>
+  );
 }
 
 export default App;
